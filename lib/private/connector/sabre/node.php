@@ -152,7 +152,9 @@ abstract class OC_Connector_Sabre_Node implements \Sabre\DAV\INode, \Sabre\DAV\I
 		$existing = $this->getProperties(array());
 		foreach ($properties as $propertyName => $propertyValue) {
 			// If it was null, we need to delete the property
-			if (is_null($propertyValue)) {
+			if ($propertyName === self::TAGS_PROPERTYNAME) {
+				$this->updateTags($propertyValue->getTags());
+			} else if (is_null($propertyValue)) {
 				if (array_key_exists($propertyName, $existing)) {
 					$query = OC_DB::prepare('DELETE FROM `*PREFIX*properties`'
 						. ' WHERE `userid` = ? AND `propertypath` = ? AND `propertyname` = ?');
@@ -190,6 +192,53 @@ abstract class OC_Connector_Sabre_Node implements \Sabre\DAV\INode, \Sabre\DAV\I
 		$query->execute(array(OC_User::getUser(), $this->path));
 
 		$this->setPropertyCache(null);
+
+		// remove all tags
+		$this->clearTags();
+	}
+
+	/**
+	 * Clears all tags from the node.
+	 */
+	private function clearTags() {
+		// TODO: refactor with TagService
+		$fileId = $this->info->getId();
+		$tagger = \OC::$server->getTagManager()->load('files');
+		$currentTags = $tagger->getTagsForObjects(array($fileId));
+		if ($currentTags) {
+			foreach (current($currentTags) as $tag) {
+				$tagger->unTag($fileId, $tag);
+			}
+		}
+	}
+
+	/**
+	 * Updates the tags of the node.
+	 *
+	 * @param array array of tag strings
+	 */
+	private function updateTags($tags) {
+		if (empty($tags)) {
+			$this->clearTags();
+			return;
+		}
+		$fileId = $this->info->getId();
+		// TODO: refactor with TagService
+		$tagger = \OC::$server->getTagManager()->load('files');
+		$currentTags = $tagger->getTagsForObjects(array($fileId));
+
+		if (!empty($currentTags)) {
+			$currentTags = current($currentTags);
+		}
+
+		$newTags = array_diff($tags, $currentTags);
+		foreach ($newTags as $tag) {
+			$tagger->tagAs($fileId, $tag);
+		}
+		$deletedTags = array_diff($currentTags, $tags);
+		foreach ($deletedTags as $tag) {
+			$tagger->unTag($fileId, $tag);
+		}
 	}
 
 	/**

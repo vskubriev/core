@@ -21,6 +21,8 @@
  *
  */
 
+use OC\Connector\Sabre\TagList;
+
 class OC_Connector_Sabre_Directory extends OC_Connector_Sabre_Node
 	implements \Sabre\DAV\ICollection, \Sabre\DAV\IQuota {
 
@@ -142,7 +144,7 @@ class OC_Connector_Sabre_Directory extends OC_Connector_Sabre_Node
 		$folder_content = $this->fileView->getDirectoryContent($this->path);
 		$paths = array();
 		foreach($folder_content as $info) {
-			$paths[] = $this->path.'/'.$info['name'];
+			$paths[$info->getId()] = $this->path.'/'.$info['name'];
 			$properties[$this->path.'/'.$info['name']][self::GETETAG_PROPERTYNAME] = '"' . $info['etag'] . '"';
 		}
 		if(count($paths)>0) {
@@ -150,7 +152,7 @@ class OC_Connector_Sabre_Directory extends OC_Connector_Sabre_Node
 			// the number of arguments within IN conditions are limited in most databases
 			// we chunk $paths into arrays of 200 items each to meet this criteria
 			//
-			$chunks = array_chunk($paths, 200, false);
+			$chunks = array_chunk(array_values($paths), 200, false);
 			foreach ($chunks as $pack) {
 				$placeholders = join(',', array_fill(0, count($pack), '?'));
 				$query = OC_DB::prepare( 'SELECT * FROM `*PREFIX*properties`'
@@ -164,6 +166,16 @@ class OC_Connector_Sabre_Directory extends OC_Connector_Sabre_Node
 					if($propertyname !== self::GETETAG_PROPERTYNAME) {
 						$properties[$propertypath][$propertyname] = $propertyvalue;
 					}
+				}
+			}
+			// also retrieve tags
+			// TODO: inject this somehow if possible...
+			$tagger = \OC::$server->getTagManager()->load('files');
+			// TODO: find a way to avoid this call if the property wasn't requested
+			$tags = $tagger->getTagsForObjects(array_keys($paths));
+			if (count($tags) > 0) {
+				foreach ($tags as $fileId => $fileTags) {
+					$properties[$paths[$fileId]][self::TAGS_PROPERTYNAME] = new TagList($fileTags);
 				}
 			}
 		}

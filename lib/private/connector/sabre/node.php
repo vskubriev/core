@@ -1,5 +1,7 @@
 <?php
+
 use Sabre\DAV\URLUtil;
+use OC\Connector\Sabre\TagList;
 
 /**
  * ownCloud
@@ -24,6 +26,8 @@ use Sabre\DAV\URLUtil;
 abstract class OC_Connector_Sabre_Node implements \Sabre\DAV\INode, \Sabre\DAV\IProperties {
 	const GETETAG_PROPERTYNAME = '{DAV:}getetag';
 	const LASTMODIFIED_PROPERTYNAME = '{DAV:}lastmodified';
+	const NS_OWNCLOUD = 'http://owncloud.org/ns';
+	const TAGS_PROPERTYNAME = '{' . self::NS_OWNCLOUD . '}tags';
 
 	/**
 	 * Allow configuring the method used to generate Etags
@@ -209,6 +213,14 @@ abstract class OC_Connector_Sabre_Node implements \Sabre\DAV\INode, \Sabre\DAV\I
 			}
 
 			$this->property_cache[self::GETETAG_PROPERTYNAME] = '"' . $this->info->getEtag() . '"';
+			if (in_array(self::TAGS_PROPERTYNAME, $properties)) {
+				$tagger = \OC::$server->getTagManager()->load('files');
+				$tags = $tagger->getTagsForObjects(array($this->info->getId()));
+				if ($tags) {
+					$tags = new TagList(current($tags));
+					$this->property_cache[self::TAGS_PROPERTYNAME] = $tags;
+				}
+			}
 		}
 
 		// if the array was empty, we need to return everything

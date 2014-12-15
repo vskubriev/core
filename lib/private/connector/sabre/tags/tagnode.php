@@ -82,7 +82,12 @@ class TagNode extends \Sabre\DAV\Collection implements \Sabre\DAV\ICollection {
 		$results = $view->searchByTag($this->info['name'], $owner);
 		// TODO: chunk this, horribly unefficient
 		foreach ($results as $fileInfo) {
-			$nodes[] = new \OC_Connector_Sabre_File($view, $fileInfo);
+			if ($fileInfo->getType() === $fileInfo::TYPE_FOLDER) {
+				$node = new \OC_Connector_Sabre_Directory($view, $fileInfo);
+			} else {
+				$node = new \OC_Connector_Sabre_File($view, $fileInfo);
+			}
+			$nodes[] = $node;
 		}
 		return $nodes;
 	}

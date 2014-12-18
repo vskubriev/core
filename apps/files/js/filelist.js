@@ -1667,7 +1667,7 @@
 		setFilter:function(filter) {
 			this._filter = filter;
 			this.fileSummary.setFilter(filter, this.files);
-			this.hideHeaderWhenNoFilesMatch();
+			this.hideIrrelevantUIWhenNoFilesMatch();
 			var that = this;
 			this.$fileList.find('tr').each(function(i,e) {
 				var $e = $(e);
@@ -1679,11 +1679,13 @@
 				}
 			});
 		},
-		hideHeaderWhenNoFilesMatch:function() {
+		hideIrrelevantUIWhenNoFilesMatch:function() {
 			if (this._filter && this.fileSummary.summary.totalDirs + this.fileSummary.summary.totalFiles === 0) {
 				this.$el.find('#filestable thead th').addClass('hidden');
+				this.$el.find('#emptycontent').addClass('hidden');
 			} else {
-				this.$el.find('#filestable thead th').removeClass('hidden');
+				this.$el.find('#filestable thead th').toggleClass('hidden', this.isEmpty);
+				this.$el.find('#emptycontent').toggleClass('hidden', !this.isEmpty);
 			}
 		},
 		/**

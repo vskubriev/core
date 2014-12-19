@@ -1,0 +1,10 @@
+image: deepdiver/owncloud-dotci:latest
+
+command:
+    php-syntax: find . -name \\*.php -exec php -l "{}" \\;
+    sqlite: ./autotest.sh sqlite
+    mysql: ./autotest.sh mysql
+    pgsql: ./autotest.sh pgsql
+    javascript: ./autotest-js.sh
+
+

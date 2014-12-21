@@ -12,6 +12,7 @@ $template = new OC_Template('settings', 'admin', 'user');
 
 $entries = OC_Log_Owncloud::getEntries(3);
 $entriesRemaining = count(OC_Log_Owncloud::getEntries(4)) > 3;
+$logFileSize = OC_Log_Owncloud::getLogFileSize();
 $config = \OC::$server->getConfig();
 $appConfig = \OC::$server->getAppConfig();
 
@@ -31,6 +32,7 @@ $template->assign('mail_smtpname', $config->getSystemValue("mail_smtpname", ''))
 $template->assign('mail_smtppassword', $config->getSystemValue("mail_smtppassword", ''));
 $template->assign('entries', $entries);
 $template->assign('entriesremain', $entriesRemaining);
+$template->assign('logFileSize', $logFileSize);
 $template->assign('readOnlyConfigEnabled', OC_Helper::isReadOnlyConfigEnabled());
 $template->assign('isLocaleWorking', OC_Util::isSetLocaleWorking());
 $template->assign('isPhpCharSetUtf8', OC_Util::isPhpCharSetUtf8());

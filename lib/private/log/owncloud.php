@@ -142,11 +142,17 @@ class OC_Log_Owncloud {
 		return $entries;
 	}
 
-
 	/**
-	 * @return resource
+	 * @return string
 	 */
 	public static function getLogFilePath() {
 		return self::$logFile;
+	}
+
+	/**
+	 * @return int
+	 */
+	public static function getLogFileSize() {
+		return filesize(self::$logFile);
 	}
 }

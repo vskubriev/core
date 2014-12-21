@@ -56,14 +56,15 @@ class LogSettingsController extends Controller {
 	/**
 	 * get log entries from logfile
 	 *
-	 * @param int $limit
+	 * @param int $count
 	 * @param int $offset
 	 * @return JSONResponse
 	 */
-	public function getEntries($limit=50, $offset=0) {
+	public function getEntries($count=50, $offset=0) {
 		return new JSONResponse([
 			'data' => \OC_Log_Owncloud::getEntries($count, $offset),
-			'remain' => count(\OC_Log_Owncloud::getEntries(1, $offset + $limit)) !== 0
+			'remain' => count(\OC_Log_Owncloud::getEntries(1, $offset + $count)) !== 0,
+			'status' => 'success',
 		]);
 	}
 

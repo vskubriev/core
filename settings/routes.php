@@ -25,6 +25,8 @@ $application->registerRoutes($this, array(
 		array('name' => 'SecuritySettings#trustedDomains', 'url' => '/settings/admin/security/trustedDomains', 'verb' => 'POST'),
 		array('name' => 'Users#setMailAddress', 'url' => '/settings/users/{id}/mailAddress', 'verb' => 'PUT'),
 		array('name' => 'LogSettings#downloadLogFile', 'url' => '/settings/admin/log/download', 'verb' => 'GET'),
+		array('name' => 'LogSettings#getEntries', 'url' => '/settings/admin/log/getEntries', 'verb' => 'GET'),
+		array('name' => 'LogSettings#setLogLevel', 'url' => '/settings/admin/log/setLevel', 'verb' => 'POST'),
 	)
 ));
 
@@ -88,8 +90,6 @@ $this->create('settings_ajax_uninstallapp', '/settings/ajax/uninstallapp.php')
 $this->create('settings_ajax_navigationdetect', '/settings/ajax/navigationdetect.php')
 	->actionInclude('settings/ajax/navigationdetect.php');
 // admin
-$this->create('settings_ajax_getlog', '/settings/ajax/getlog.php')
-	->actionInclude('settings/ajax/getlog.php');
 $this->create('settings_ajax_setloglevel', '/settings/ajax/setloglevel.php')
 	->actionInclude('settings/ajax/setloglevel.php');
 $this->create('settings_ajax_excludegroups', '/settings/ajax/excludegroups.php')

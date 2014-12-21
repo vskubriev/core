@@ -15,6 +15,11 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\IConfig;
 
+/**
+ * Class LogSettingsController
+ *
+ * @package OC\Settings\Controller
+ */
 class LogSettingsController extends Controller {
 	/** @var \OCP\IConfig */
 	private $config;
@@ -64,8 +69,10 @@ class LogSettingsController extends Controller {
 
 	/**
 	 * download the logfile
+	 *
+	 * @NoCSRFRequired
 	 */
-	public function downloadLogfile() {
+	public function downloadLogFile() {
 		$this->sendHeadersForLogFileDownload();
 
 		//AppFramework Responses don't support handles,

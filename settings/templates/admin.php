@@ -484,6 +484,7 @@ if ($_['suggestedOverwriteWebroot']) {
 		</tr>
 		<?php endforeach;?>
 	</table>
+	<input id="downloadLog" type="button" value="<?php p($l->t('Download logfile'));?>">
 	<?php if ($_['entriesremain']): ?>
 	<input id="moreLog" type="button" value="<?php p($l->t('More'));?>...">
 	<input id="lessLog" type="button" value="<?php p($l->t('Less'));?>...">

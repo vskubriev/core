@@ -68,6 +68,9 @@ OC.Log = {
 			$('#log').append(row);
 		}
 		OC.Log.loaded += entries.length;
+	},
+	downloadLogFile: function() {
+		window.location.href = OC.generateUrl('settings/admin/log/download', []);
 	}
 };
 
@@ -77,5 +80,8 @@ $(document).ready(function () {
 	});
 	$('#lessLog').click(function () {
 		OC.Log.showLess();
+	});
+	$('#downloadLog').click(function () {
+		OC.Log.downloadLogFile();
 	});
 });

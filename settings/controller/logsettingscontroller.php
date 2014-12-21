@@ -43,9 +43,10 @@ class LogSettingsController extends Controller {
 	 * @return JSONResponse
 	 */
 	public function setLogLevel($level) {
-		if ($level < 0 && $level > 4) {
+		if ($level < 0 || $level > 4) {
 			return new JSONResponse([
 				'message' => 'log-level out of allowed range',
+				'status' => 'error',
 			]);
 		}
 

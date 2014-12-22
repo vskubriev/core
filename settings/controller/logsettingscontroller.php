@@ -50,9 +50,9 @@ class LogSettingsController extends Controller {
 			]);
 		}
 
-		$this->config->setSystemValue('loglevel', (int) $level);
+		$this->config->setSystemValue('loglevel', $level);
 		return new JSONResponse([
-			'level' => (int) $level,
+			'level' => $level,
 			'status' => 'success',
 		]);
 	}

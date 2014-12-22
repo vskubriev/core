@@ -153,6 +153,6 @@ class OC_Log_Owncloud {
 	 * @return int
 	 */
 	public static function getLogFileSize() {
-		return filesize(self::$logFile);
+		return ((int) filesize(self::$logFile));
 	}
 }

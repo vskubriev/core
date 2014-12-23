@@ -132,20 +132,6 @@ class USER_WEBDAVAUTH implements \OCP\UserInterface, \OCP\IUserBackend {
 	}
 
 	/**
-	 * get the user's home directory
-	 *
-	 * @param string $uid the username
-	 * @return string|false
-	 */
-	public function getHome($uid) {
-		if ($this->userExists($uid)) {
-			return $this->config->getSystemValue('datadirectory', $this->serverRoot . '/data') . '/' . $uid;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Set display name
 	 *
 	 * @param string $uid The username
